@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Compute a density map and binary from a streamlines file then extract radiomics features
+**Still a work in progress**
 
-**Still a work in progress
+Compute a density map and binary from a streamlines file then extract radiomics features (GLRLM only)
 
 This script correctly handles compressed streamlines.
 """
@@ -18,7 +18,7 @@ from scilpy.io.streamlines import load_tractogram_with_reference
 from scilpy.io.utils import (add_overwrite_arg, add_reference_arg,
                              assert_inputs_exist, assert_outputs_exist)
 from scilpy.tractanalysis.streamlines_metrics import compute_tract_counts_map
-from pyradiomics.radiomics import glszm, imageoperations
+from pyradiomics.radiomics import glrlm, imageoperations
 
 def _build_arg_parser():
     p = argparse.ArgumentParser(
@@ -83,11 +83,11 @@ def main():
         streamline_mask = correctedMask
     croppedImage, croppedMask = imageoperations.cropToTumorMask(streamline_count, streamline_mask, bb)
 
-    glszmFeatures = glszm.RadiomicsGLSZM(croppedImage, croppedMask, args.param_file)
-    glszmFeatures.enableAllFeatures()
+    glrlmFeatures = glrlm.RadiomicsGLRLM(croppedImage, croppedMask, args.param_file)
+    glrlmFeatures.enableAllFeatures()
 
     # Calculate features and print
-    result = glszmFeatures.execute()
+    result = glrlmFeatures.execute()
 
     print('Calculated GLSZM features')
     for key, value in six.iteritems(result):
